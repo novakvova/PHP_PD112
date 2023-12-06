@@ -16,21 +16,6 @@
     include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
     ?>
 
-    <?php
-    $n = 2;
-    $list=array();
-    $list[0]=[
-        "id"=>1,
-        "image"=>"https://content.rozetka.com.ua/goods/images/big/334492324.jpg",
-        "name"=>"Ноутбук Lenovo IdeaPad Slim 5 16IAH8"
-    ];
-    $list[1]=[
-        "id"=>2,
-        "image"=>"https://content1.rozetka.com.ua/goods/images/big/380187733.jpg",
-        "name"=>"Ноутбук Dell Latitude 5340"
-    ];
-
-    ?>
 
     <h1 class="text-center">Категорії</h1>
     <table class="table">
