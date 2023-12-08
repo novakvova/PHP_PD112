@@ -28,7 +28,6 @@ if(isset($_GET['id'])) {
     }
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $id=$_GET['id'];
