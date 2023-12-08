@@ -1,7 +1,9 @@
 <?php
 global $pdo;
 include_once($_SERVER['DOCUMENT_ROOT'] . "/config/constants.php");
-
+$name="";
+$description="";
+$image="";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     // Generate a unique ID
@@ -31,6 +33,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: /");
     exit();
 }
+else if($_SERVER["REQUEST_METHOD"] == "GET") {
+    $id=$_GET['id'];
+    include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
+    $sql = "$id";
+
+    // Prepare the SQL query
+    $stmt = $pdo->prepare("SELECT id, name, image, description FROM categories WHERE id = :id");
+
+    // Bind the parameter
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+
+    // Execute the query
+    $stmt->execute();
+
+    // Fetch the result as an associative array
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if($result) {
+        $name = $result['name'];
+        $image = $result['image'];
+        $description = $result['description'];
+    }
+}
 ?>
 
 <!doctype html>
@@ -49,12 +74,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include $_SERVER['DOCUMENT_ROOT'] . "/_header.php";
     ?>
 
-    <h1 class="text-center">Додати категорію</h1>
+    <h1 class="text-center">Змінить категорію</h1>
 
     <form class="col-md-6 offset-md-3" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label">Назва</label>
-            <input type="text" class="form-control" name="name" id="name">
+            <input type="text" class="form-control"
+                   name="name" id="name"
+                   value="<?php echo $name ?>"
+            >
         </div>
 
         <div class="mb-3">
@@ -64,7 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="mb-3">
             <label for="description" class="form-label">Опис</label>
-            <textarea class="form-control" placeholder="Вкажіть опис" name="description" id="description"></textarea>
+            <textarea class="form-control" placeholder="Вкажіть опис" name="description" id="description"><?php echo $description ?>
+            </textarea>
         </div>
 
         <!--        <div class="row">-->

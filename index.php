@@ -13,6 +13,7 @@
 <div class="container py-3">
     <?php
     include $_SERVER['DOCUMENT_ROOT'] . "/_header.php";
+    include $_SERVER['DOCUMENT_ROOT'] . "/config/constants.php";
     include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
     ?>
 
@@ -36,7 +37,7 @@
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as $row) {
             $id=$row['id'];
-            $image=$row['image'];
+            $image='/'.UPLOADING.'/'.$row['image'];
             $description=$row['image'];
             $name=$row['name'];
             echo "
@@ -46,6 +47,7 @@
                 <td>$name</td>
                 <td>
                     <a href='#' class='btn btn-danger'>delete</a>
+                    <a href='/edit.php?id=$id' class='btn btn-info'>Змінить</a>
                 </td>
             </tr>
             ";
