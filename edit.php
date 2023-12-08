@@ -4,36 +4,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/config/constants.php");
 $name="";
 $description="";
 $image="";
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'];
-    // Generate a unique ID
-    $image_name = "";
-// Check if the form was submitted
-    if (isset($_FILES['image'])) {
-        $uploadDir = UPLOADING; // Specify the directory where you want to store uploaded files
-        $image_name = uniqid() .".". pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-        $uploadedFile = $_SERVER['DOCUMENT_ROOT'] ."/". $uploadDir. "/" . $image_name;
-        // Move the uploaded file to the specified directory
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadedFile)) {
-            echo "<script> console.log('Upload image is good'); </script>";
-        }
-    }
-    $description = $_POST['description'];
-    //echo $name . " " . $image . " " . $description . "\n";
-    include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
-    $sql = "INSERT INTO categories (name, image, description) VALUES (?, ?, ?)";
-
-    $dataToInsert = [
-        $name,
-        $image_name,
-        $description
-    ];
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($dataToInsert);
-    header("Location: /");
-    exit();
-}
-else if($_SERVER["REQUEST_METHOD"] == "GET") {
+if(isset($_GET['id'])) {
     $id=$_GET['id'];
     include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
     $sql = "$id";
@@ -56,6 +27,41 @@ else if($_SERVER["REQUEST_METHOD"] == "GET") {
         $description = $result['description'];
     }
 }
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['name'];
+    $id=$_GET['id'];
+    // Generate a unique ID
+    $image_name = $image;
+// Check if the form was submitted
+    if (isset($_FILES['image'])&&$_FILES["image"]["size"]!=0) {
+        $uploadDir = UPLOADING; // Specify the directory where you want to store uploaded files
+        $image_name = uniqid() .".". pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $uploadedFile = $_SERVER['DOCUMENT_ROOT'] ."/". $uploadDir. "/" . $image_name;
+        // Move the uploaded file to the specified directory
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadedFile)) {
+            echo "<script> console.log('Upload image is good'); </script>";
+            unlink($_SERVER['DOCUMENT_ROOT'] ."/". $uploadDir. "/" .$image);
+        }
+    }
+    $description = $_POST['description'];
+    //echo $name . " " . $image . " " . $description . "\n";
+    include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
+    $sql = "UPDATE categories SET  name = ?, image = ?, description = ? WHERE id = ?";
+
+    $dataToInsert = [
+        $name,
+        $image_name,
+        $description,
+        $id
+    ];
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($dataToInsert);
+    header("Location: /");
+    exit();
+}
+
 ?>
 
 <!doctype html>
@@ -85,31 +91,25 @@ else if($_SERVER["REQUEST_METHOD"] == "GET") {
             >
         </div>
 
-        <div class="mb-3">
-            <label for="image" class="form-label">Фото</label>
-            <input type="file" class="form-control" name="image" id="image">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="<?php echo "/".UPLOADING."/".$image ?>"
+                     alt="Обране фото" width="100%">
+            </div>
+            <div class="col-md-9">
+                <div class="mb-3">
+                    <label for="image" class="form-label">Оберіть фото</label>
+                    <input class="form-control" type="file" id="image" name="image" accept="image/*">
+                </div>
+            </div>
         </div>
 
         <div class="mb-3">
             <label for="description" class="form-label">Опис</label>
-            <textarea class="form-control" placeholder="Вкажіть опис" name="description" id="description"><?php echo $description ?>
-            </textarea>
+            <textarea class="form-control" placeholder="Вкажіть опис" name="description" id="description"><?php echo $description ?></textarea>
         </div>
 
-        <!--        <div class="row">-->
-        <!--            <div class="col-md-3">-->
-        <!--                <img src="https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg"-->
-        <!--                     alt="Обране фото" width="150">-->
-        <!--            </div>-->
-        <!--            <div class="col-md-9">-->
-        <!--                <div class="mb-3">-->
-        <!--                    <label for="image" class="form-label">Оберіть фото</label>-->
-        <!--                    <input class="form-control" type="file" id="image" name="image" accept="image/*">-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <button type="submit" class="btn btn-primary">Оновити</button>
     </form>
 
 </div>
