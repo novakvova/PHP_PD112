@@ -7,8 +7,6 @@ $image="";
 if(isset($_GET['id'])) {
     $id=$_GET['id'];
     include $_SERVER['DOCUMENT_ROOT'] . "/config/connection_database.php";
-    $sql = "$id";
-
     // Prepare the SQL query
     $stmt = $pdo->prepare("SELECT id, name, image, description FROM categories WHERE id = :id");
 
