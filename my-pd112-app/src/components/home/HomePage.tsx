@@ -1,55 +1,41 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Table, Divider } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import http_common from "../../http_common.ts";
 
-interface DataType {
-    key: React.Key;
+interface ICategoryItem {
+    id: number;
     name: string;
-    age: number;
-    address: string;
 }
 
-const columns: ColumnsType<DataType> = [
+const columns: ColumnsType<ICategoryItem> = [
     {
-        title: 'Name',
+        title: '#',
+        dataIndex: 'id',
+    },
+    {
+        title: 'Назва',
         dataIndex: 'name',
-    },
-    {
-        title: 'Age',
-        dataIndex: 'age',
-    },
-    {
-        title: 'Address',
-        dataIndex: 'address',
-    },
+    }
 ];
 
-const data: DataType[] = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-];
+const HomePage: React.FC = () => {
+    const [data, setData] = useState<ICategoryItem[]>();
+    useEffect(() => {
+        console.log("Show info", http_common.defaults.baseURL);
+        http_common.get("/api/categories")
+            .then(resp=> {
+                console.log("Result = ", resp.data);
+                setData(resp.data);
+            });
+    },[]);
 
-const HomePage: React.FC = () => (
-    <>
-        <Divider>Списко категорій</Divider>
-        <Table columns={columns} dataSource={data} size="middle" />
-    </>
-);
+    return (
+        <>
+            <Divider>Списко категорій</Divider>
+            <Table columns={columns} rowKey="id" dataSource={data} size="middle" />
+        </>
+    )
+}
 
 export default HomePage;
