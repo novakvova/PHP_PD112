@@ -22,6 +22,7 @@ class CategoryController extends Controller
     }
 
     public function create(Request $request) {
+        $inputs = $request->all();
         $image = $request->file("image");
         $imageName = uniqid().".webp";
         $sizes = [50,150,300,600,1200];
@@ -38,6 +39,9 @@ class CategoryController extends Controller
             $path=public_path('upload/'.$fileSave);
             $imageRead->toWebp()->save($path);
         }
-        return response()->json();
+        $inputs["image"]= $imageName;
+        $category = Categories::create($inputs);
+        return response()->json($category,201,
+            ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'], JSON_UNESCAPED_UNICODE);
     }
 }
