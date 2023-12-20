@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Table, Divider, Button} from 'antd';
+import {Table, Divider, Button, Popconfirm} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import http_common from "../../http_common.ts";
 import {APP_ENV} from "../../env";
 import {useNavigate} from "react-router-dom";
+import { DeleteOutlined } from '@ant-design/icons';
 
 interface ICategoryItem {
     id: number;
@@ -11,31 +12,11 @@ interface ICategoryItem {
     image: string;
 }
 const url_image = `${APP_ENV.BASE_URL}/upload/150_`;
-const columns: ColumnsType<ICategoryItem> = [
 
-    {
-        title: '#',
-        dataIndex: 'id',
-    },
-    {
-        title: "Фото",
-        dataIndex: "image",
-        render: (imageName: string) => {
-            return (
-                <img src={`${url_image}${imageName}`} width={100} alt={"Ковбаса"} />
-            );
-        }
-    },
-    {
-        title: 'Назва',
-        dataIndex: 'name'
-
-    },
-];
 
 const HomePage: React.FC = () => {
     const navigator = useNavigate();
-    const [data, setData] = useState<ICategoryItem[]>();
+    const [data, setData] = useState<ICategoryItem[]>([]);
     useEffect(() => {
         //console.log("Show info", http_common.defaults.baseURL);
         http_common.get("/api/categories")
@@ -44,6 +25,59 @@ const HomePage: React.FC = () => {
                 setData(resp.data);
             });
     },[]);
+
+
+    const columns: ColumnsType<ICategoryItem> = [
+
+        {
+            title: '#',
+            dataIndex: 'id',
+        },
+        {
+            title: "Фото",
+            dataIndex: "image",
+            render: (imageName: string) => {
+                return (
+                    <img src={`${url_image}${imageName}`} width={100} alt={"Ковбаса"} />
+                );
+            }
+        },
+        {
+            title: 'Назва',
+            dataIndex: 'name'
+
+        },
+        {
+            title: 'Видалить',
+            dataIndex: 'delete',
+            render: (_, record) => (
+                // <Button type="danger" onClick={() => handleDelete(record.id)}>
+                //     Delete
+                // </Button>
+
+                <Popconfirm
+                    title="Are you sure to delete this category?"
+                    onConfirm={async () => {
+                        try {
+                            await http_common.delete(`/api/categories/${record.id}`);
+                            setData(data.filter(x=>x.id!=record.id));
+
+                        } catch (error) {
+                            console.error('Error fetching category details:', error);
+                            throw error;
+                        }
+                    }}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button icon={<DeleteOutlined />}>
+                        Delete
+                    </Button>
+                </Popconfirm>
+
+            ),
+        },
+    ];
 
     return (
         <>
