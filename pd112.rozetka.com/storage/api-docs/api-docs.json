@@ -129,6 +129,51 @@
                     }
                 }
             }
+        },
+        "/api/categories/edit/{id}": {
+            "post": {
+                "tags": [
+                    "Category"
+                ],
+                "operationId": "c7dd8ffc2afd8e67c95ac314fe1d84f5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ідентифікатор категорії",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "type": "file"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Add Category."
+                    }
+                }
+            }
         }
     }
 }
