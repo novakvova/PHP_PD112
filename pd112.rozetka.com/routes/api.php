@@ -30,3 +30,4 @@ Route::delete("/categories/{id}", [CategoryController::class, "delete"]);
 Route::post("/categories/edit/{id}", [CategoryController::class, "edit"]);
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
