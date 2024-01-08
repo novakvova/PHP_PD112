@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -143,6 +144,10 @@ class AuthController extends Controller
             $path=public_path('upload/'.$fileSave);
             $imageRead->toWebp()->save($path);
         }
-        return response()->json(['token'=>$imageName], Response::HTTP_OK);
+        $user = User::create(array_merge(
+            $validation->validated(),
+            ['password' => bcrypt($request->password), 'image'=> $imageName]
+        ));
+        return response()->json(['user'=>$user], Response::HTTP_OK);
     }
 }
