@@ -16,6 +16,13 @@ const initState: IAuthReducerState = {
 
 const AuthReducer = (state = initState, action: any) : IAuthReducerState => {
     switch (action.type) {
+        case AuthReducerActionType.LOGIN_USER: {
+            const user = action.payload as IUser;
+            return {
+                isAuth: true,
+                user
+            } as IAuthReducerState
+        }
         default:
             return state;
     }

@@ -5,10 +5,13 @@ import {useState} from "react";
 import {ILoginResult, IRegister, IRegisterForm, IUser} from "../types.ts";
 import http_common from "../../../http_common.ts";
 import {jwtDecode} from "jwt-decode";
+import {useDispatch} from "react-redux";
+import {AuthReducerActionType} from "./AuthReducer.ts";
 
 const LoginPage = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [errorMessage] = useState<string>("");
 
@@ -24,9 +27,17 @@ const LoginPage = () => {
             const resp = await http_common.post<ILoginResult>("/api/login", model);
             const {data} = resp;
             const user = jwtDecode(data.token) as IUser
+            dispatch({
+                type: AuthReducerActionType.LOGIN_USER,
+                payload: {
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                    lastName: user.lastName
+                } as IUser
+            }); //викликаю AuthReducer - щоб він змінив state в redux - глобальний state
             console.log("User new", user);
             //navigate("/");
-
         }
         catch (ex) {
             message.error('Невірно вказано пошта або пароль!');
