@@ -1,12 +1,13 @@
 import {Layout, Menu, MenuProps} from "antd";
 import {useNavigate} from "react-router-dom";
-import {useSelector} from "react-redux";
-import {IAuthReducerState} from "../../auth/login/AuthReducer.ts";
+import {useDispatch, useSelector} from "react-redux";
+import {AuthReducerActionType, IAuthReducerState} from "../../auth/login/AuthReducer.ts";
 const { Header} = Layout;
 
 
 
 const DefaultHeader = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const items: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
         key,
@@ -29,6 +30,8 @@ const DefaultHeader = () => {
             key: '100',
             label: "Вихід",
             onClick: () => {
+                dispatch({type: AuthReducerActionType.LOGOUT_USER});
+                localStorage.removeItem("token");
                 navigate("/");
             }
         });
@@ -39,6 +42,7 @@ const DefaultHeader = () => {
             label: "Вхід",
             onClick: () => {
                 console.log("Вихід користувача");
+
                 navigate("/login");
             }
         });

@@ -26,6 +26,7 @@ const LoginPage = () => {
         try {
             const resp = await http_common.post<ILoginResult>("/api/login", model);
             const {data} = resp;
+            localStorage.token = data.token;
             const user = jwtDecode(data.token) as IUser
             dispatch({
                 type: AuthReducerActionType.LOGIN_USER,
@@ -37,7 +38,7 @@ const LoginPage = () => {
                 } as IUser
             }); //викликаю AuthReducer - щоб він змінив state в redux - глобальний state
             console.log("User new", user);
-            //navigate("/");
+            navigate("/");
         }
         catch (ex) {
             message.error('Невірно вказано пошта або пароль!');
