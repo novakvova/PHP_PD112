@@ -17,7 +17,8 @@ class ProductController extends Controller
      * )
      */
     public function getList() {
-        $data = Product::all();
+//        $data = Product::all();
+        $data = Product::with('category')->get();
         return response()->json($data)
             ->header('Content-Type', 'application/json; charset=utf-8');
     }
