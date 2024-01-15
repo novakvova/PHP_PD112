@@ -9,6 +9,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Image;
 use Symfony\Component\HttpFoundation\Response;
+
 class AuthController extends Controller
 {
     /**
