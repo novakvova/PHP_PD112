@@ -1,19 +1,23 @@
 import {Layout, Menu, MenuProps} from "antd";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AuthReducerActionType, IAuthReducerState} from "../../auth/login/AuthReducer.ts";
 const { Header} = Layout;
 
-
-
 const DefaultHeader = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const items: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
-        key,
-        label: `nav ${key}`,
+    const items: MenuProps['items'] = [];
 
-    }));
+    items.push({
+        key: '1',
+        label: <Link to={"/"}>Категорії</Link>
+    });
+
+    items.push({
+        key: '2',
+        label: <Link to={"/products/create"}>Додати продукт</Link>
+    });
 
     const {isAuth, user} = useSelector((redux: any)=>redux.auth as IAuthReducerState)
 
